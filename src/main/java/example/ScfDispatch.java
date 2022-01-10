@@ -1,6 +1,6 @@
 package example;
 
-import java.util.Map;
+import java.util.Properties;
 
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.profile.ClientProfile;
@@ -12,18 +12,17 @@ import com.tencentcloudapi.scf.v20180416.models.*;
 public class ScfDispatch {
     public String handle(RequestClass request) {
 
-        Map<String, String> env = System.getenv();
-        for (String envName : env.keySet()) {
-            System.out.format("%s=%s%n", envName, env.get(envName));
-        }
+        Properties properties = System.getProperties();
+        properties.list(System.out);
 
-        // Java运行时暂时不支持通过环境变量获取运行角色，需要设置SecretId和SecretKey
-        String secretId = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-        String secretKey = "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy";
+        // 通过环境变量获取运行角色，需要设置SecretId、SecretKey以及Token
+        String secretId = System.getProperty("TENCENTCLOUD_SECRETID");
+        String secretKey = System.getProperty("TENCENTCLOUD_SECRETKEY");
+        String token = System.getProperty("TENCENTCLOUD_SESSIONTOKEN");
 
 
         try {
-            Credential cred = new Credential(secretId, secretKey);
+            Credential cred = new Credential(secretId, secretKey, token);
 
             HttpProfile httpProfile = new HttpProfile();
             httpProfile.setEndpoint("scf.tencentcloudapi.com");
